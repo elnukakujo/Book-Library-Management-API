@@ -1,7 +1,7 @@
-GET  http://127.0.0.1:5212/books
+GET  http://127.0.0.1:5212/book/
 
 ###
-POST  http://127.0.0.1:5212/books
+POST  http://127.0.0.1:5212/books/
 Content-Type: application/json
 
 {
@@ -10,9 +10,9 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:5212/books/ShadowOverInnsmouth
+GET  http://127.0.0.1:5212/book/ShadowOverInnsmouth
 
-###
+### Not working because can't change the url title
 PUT http://127.0.0.1:5212/books/ShadowOverInnsmouth
 Content-Type: application/json
 
@@ -22,4 +22,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://127.0.0.1:5212/books/ShadowOverInnsmouth
+DELETE http://127.0.0.1:5212/book/ShadowOverInnsmouth
