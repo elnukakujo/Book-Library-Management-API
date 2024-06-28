@@ -3,6 +3,7 @@ Trying backend development with ASP.NET Core
 
 ## Description
 A Book Library Management system is designed to efficiently manage the operations related to a library's collection of books. It provides functionalities to store, retrieve, update, and delete information about books and their availability. Here are some key features and functionalities:
+
 1.Catalog Management:
     Add Books: Librarians or administrators can add new books to the library's collection. This includes entering details such as title, author, ISBN, genre, publication date, etc.
     Update Books: Modify existing book details, such as updating information about editions, availability status, or adding new copies.
