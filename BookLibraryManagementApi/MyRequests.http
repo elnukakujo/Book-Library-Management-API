@@ -1,0 +1,27 @@
+GET  http://127.0.0.1:5212/books
+
+###
+POST  http://127.0.0.1:5212/books
+Content-Type: application/json
+
+{
+    "BookID":1,
+    "title": "The Shadow Over Innsmouth",
+    "authorLastName": "Lovecraft"
+}
+
+###
+GET  http://127.0.0.1:5212/books/1
+
+###
+PUT http://127.0.0.1:5212/books/1
+Content-Type: application/json
+
+{
+    "BookID":1,
+    "title": "Call of Cthulhu",
+    "authorLastName": "Lovecraft"
+}
+
+###
+DELETE http://127.0.0.1:5212/books/0
