@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IBookService, BookService>();
 var app = builder.Build();
 
-app.UseRewriter(new RewriteOptions().AddRedirect("book/(.*)", "books/$1"));
+app.UseRewriter(new RewriteOptions().AddRewrite("book/(.*)", "books/$1", skipRemainingRules: true));
 app.Use(async (context, next) =>
 {
     Console.WriteLine($"[{context.Request.Method} {context.Request.Path} {DateTime.UtcNow}] Started.");
@@ -12,15 +14,15 @@ app.Use(async (context, next) =>
 });
 
 var books = new List<Book>();
-app.MapGet("/books", () => books);
-app.MapGet("/books/{title}", (string title) =>
+app.MapGet("/books", (IBookService service) => service.GetBooks());
+app.MapGet("/books/{title}", (string title, IBookService service) =>
 {
-    var targetBook = books.FirstOrDefault(b => title == b.Title);
+    var targetBook = service.GetBook(title);
     return targetBook is null ? Results.NotFound() : Results.Ok(targetBook);
 });
-app.MapPost("/books", (Book book) =>
+app.MapPost("/books", (Book book, IBookService service) =>
 {
-    books.Add(book);
+    service.AddBook(book);
     return Results.Created($"/books/{book.Title}", book);
 })
 .AddEndpointFilter(async (context, next) =>
@@ -36,17 +38,46 @@ app.MapPost("/books", (Book book) =>
     }
     return await next(context);
 });
-app.MapPut("/books/{title}", (string title, Book updatedBook) =>
+app.MapPut("/books/{title}", (string title, Book updatedBook, IBookService service) =>
 {
-    var existingBookIndex = books.FindIndex(b => b.Title == title);
-    books[existingBookIndex] = updatedBook;
+    service.UpdateBook(title, updatedBook);
     return Results.Ok(updatedBook);
 });
-app.MapDelete("/books/{title}", (string title) =>
+app.MapDelete("/books/{title}", (string title, IBookService service) =>
 {
-    books.RemoveAll(b => title == b.Title);
+    service.DeleteBook(title);
     return Results.NoContent();
 });
 app.Run();
 
 public record Book(string Title, string AuthorLastName);
+
+interface IBookService
+{
+    List<Book> GetBooks();
+    Book? GetBook(string title);
+    Book AddBook(Book book);
+    void UpdateBook(string title, Book updatedBook);
+    void DeleteBook(string title);
+}
+
+public class BookService : IBookService
+{
+    private readonly List<Book> _books = [];
+    public List<Book> GetBooks() => _books;
+    public Book? GetBook(string title) {
+        return _books.SingleOrDefault(b => title == b.Title);
+    }
+    public Book AddBook(Book book) {
+        _books.Add(book);
+        return book;
+    }
+    public void UpdateBook(string title, Book updatedBook)
+    {
+        var existingBookIndex = _books.FindIndex(b => b.Title == title);
+        _books[existingBookIndex] = updatedBook;
+    }
+    public void DeleteBook(string title) {
+        _books.RemoveAll(b => title == b.Title);
+    }
+}
