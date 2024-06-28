@@ -22,6 +22,19 @@ app.MapPost("/books", (Book book) =>
 {
     books.Add(book);
     return Results.Created($"/books/{book.Title}", book);
+})
+.AddEndpointFilter(async (context, next) =>
+{
+    var bookArgument= context.GetArgument<Book>(0);
+    var errors=new Dictionary<string,string[]>();
+    if(bookArgument.Title.Length<5)
+    {
+        errors.Add(nameof(Book.Title),["Title must be at least 5 characters long."]);
+    }
+    if(errors.Count>0){
+        return Results.ValidationProblem(errors);
+    }
+    return await next(context);
 });
 app.MapPut("/books/{title}", (string title, Book updatedBook) =>
 {
