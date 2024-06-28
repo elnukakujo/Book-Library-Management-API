@@ -5,23 +5,21 @@ POST  http://127.0.0.1:5212/books
 Content-Type: application/json
 
 {
-    "BookID":1,
-    "title": "The Shadow Over Innsmouth",
+    "title": "ShadowOverInnsmouth",
     "authorLastName": "Lovecraft"
 }
 
 ###
-GET  http://127.0.0.1:5212/books/1
+GET  http://127.0.0.1:5212/books/ShadowOverInnsmouth
 
 ###
-PUT http://127.0.0.1:5212/books/1
+PUT http://127.0.0.1:5212/books/ShadowOverInnsmouth
 Content-Type: application/json
 
 {
-    "BookID":1,
-    "title": "Call of Cthulhu",
+    "title": "CallofCthulhu",
     "authorLastName": "Lovecraft"
 }
 
 ###
-DELETE http://127.0.0.1:5212/books/0
+DELETE http://127.0.0.1:5212/books/ShadowOverInnsmouth

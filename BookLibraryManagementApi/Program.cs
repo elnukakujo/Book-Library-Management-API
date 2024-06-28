@@ -3,27 +3,27 @@ var app = builder.Build();
 
 var books = new List<Book>();
 app.MapGet("/books", () => books);
-app.MapGet("/books/{id}", (int id) =>
+app.MapGet("/books/{title}", (string title) =>
 {
-    var targetBook = books.FirstOrDefault(b => id == b.BookID);
+    var targetBook = books.FirstOrDefault(b => title == b.Title);
     return targetBook is null ? Results.NotFound() : Results.Ok(targetBook);
 });
 app.MapPost("/books", (Book book) =>
 {
     books.Add(book);
-    return Results.Created($"/books/{book.BookID}", book);
+    return Results.Created($"/books/{book.Title}", book);
 });
-app.MapPut("/books/{id}", (int id, Book updatedBook) =>
+app.MapPut("/books/{title}", (string title, Book updatedBook) =>
 {
-    var existingBookIndex = books.FindIndex(b => b.BookID == id);
+    var existingBookIndex = books.FindIndex(b => b.Title == title);
     books[existingBookIndex] = updatedBook;
     return Results.Ok(updatedBook);
 });
-app.MapDelete("/books/{id}", (int id) =>
+app.MapDelete("/books/{title}", (string title) =>
 {
-    books.RemoveAll(b => id == b.BookID);
+    books.RemoveAll(b => title == b.Title);
     return Results.NoContent();
 });
 app.Run();
 
-public record Book(string Title, string AuthorLastName, int BookID);
+public record Book(string Title, string AuthorLastName);
