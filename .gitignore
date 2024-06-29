@@ -1,5 +1,5 @@
 BookLibraryManagementApi/obj/
 BookLibraryManagementApi/bin/
 BookLibraryManagementApi/Migrations/
-
+BookLibraryManagementApi/booklibrary.db
 .vscode/*
