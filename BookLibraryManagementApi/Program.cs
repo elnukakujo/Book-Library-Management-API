@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore; // Add this using directive
 using NSwag.AspNetCore;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,13 @@ if (app.Environment.IsDevelopment())
         config.DocExpansion = "list";
     });
 }
+app.UseRewriter(new RewriteOptions().AddRewrite("book/(.*)", "books/$1", skipRemainingRules: true));
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"[{context.Request.Method} {context.Request.Path} {DateTime.UtcNow}] Started.");
+    await next(context);
+    Console.WriteLine($"[{context.Request.Method} {context.Request.Path} {DateTime.UtcNow}] Finished.");
+});
 
 app.MapGet("/books", async (BookDb db) => 
     await db.Books.ToListAsync());
@@ -45,6 +53,18 @@ app.MapPost("/books", async (Book book, BookDb db) =>
     db.Books.Add(book);
     await db.SaveChangesAsync();
     return Results.Created($"/books/{book.Id}", book);
+}).AddEndpointFilter(async (context, next) =>
+{
+    var bookArgument= context.GetArgument<Book>(0);
+    var errors=new Dictionary<string,string[]>();
+    if(bookArgument.Title.Length<5)
+    {
+        errors.Add(nameof(Book.Title),["Title must be at least 5 characters long."]);
+    }
+    if(errors.Count>0){
+        return Results.ValidationProblem(errors);
+    }
+    return await next(context);
 });
 
 app.MapPut("/books/{id}", async (int id, Book updatedBook, BookDb db) =>

@@ -8,4 +8,6 @@ A Book Library Management system is designed to efficiently manage the operation
 On how to install C# and .NET, and create projects as well as how to run the code, see:
 https://github.com/elnukakujo/first-cSharp-project/blob/main/README.md
 
-I use the REST Client VSCode extension to send request from my MyRequests.http file
+To run the CRUD operations, you have two options:
+- Use the REST Client VSCode extension to send request from the MyRequests.http file 
+- Or go to localhost:{port}/swagger , for a better UI
