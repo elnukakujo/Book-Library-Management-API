@@ -11,3 +11,6 @@ https://github.com/elnukakujo/first-cSharp-project/blob/main/README.md
 To run the CRUD operations, you have two options:
 - Use the REST Client VSCode extension to send request from the MyRequests.http file 
 - Or go to localhost:{port}/swagger , for a better UI
+
+## Access the database
+If you want to access the database element without running the app, be sure to install the sqlite extension in vscode. Then open the command panel and open the database. A small windows opens in the bottom right letting you see the elements in your database
